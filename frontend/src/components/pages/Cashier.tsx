@@ -28,7 +28,7 @@ export const CashierPage = ()=>{
                 </div>
             </div>
            <div className="">
-             <Checkout cart={[]}/>
+             <Checkout cart={cart}/>
            </div>   
         </div>
     )
