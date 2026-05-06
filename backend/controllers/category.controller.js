@@ -4,18 +4,73 @@ const {Category, Product} = db;
 
 const getAllCategories = async (req, res) => {
     try {
-        const categories = await Category.findAll({
+        const categories = await Category.findAll(
+           
+            {
+            attributes: ["id", "name"],
             include: [
                 {
                     model: db.Product,
                     as: 'products',
                     attributes: ['id', 'name', 'price', 'stock', 'image_url']
                 }
-            ]
+            ],
+            where: {
+                isActive: true
+            }
         })
         res.status(200).json({
             success: true,
             data: categories
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+const getAllCategoriesName = async (req, res) => {
+    try {
+        const categories = await Category.findAll(
+           
+            {
+            attributes: ["id", "name"],
+           
+        })
+        res.status(200).json({
+            success: true,
+            data: categories
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        })
+    }
+}
+const getSpecificCategory = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const category = await Category.findOne({
+            where: {id},
+            attributes: ["id", "name"],
+            include: [
+                {
+                    model: db.Product,
+                    as: 'products',
+                    attributes: ['id', 'name', 'price', 'stock', 'image_url']
+                }
+            ],
+            where: {
+                isActive: true  
+            }
+        })
+        res.status(200).json({
+            success: true,
+            data: category
         })
     } catch (error) {
         console.log(error)
@@ -118,6 +173,8 @@ const hardDeleteCategory = async (req,res)=>{
     }
 }
 module.exports = {
+    getSpecificCategory,
+    getAllCategoriesName,
     getAllCategories,
     createCategory,
     updateCategory,

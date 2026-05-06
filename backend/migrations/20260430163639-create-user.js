@@ -22,7 +22,8 @@ module.exports = {
         type: Sequelize.ENUM('admin','cashier','owner')
       },
       isActive: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       createdAt: {
         allowNull: false,

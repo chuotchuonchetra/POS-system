@@ -24,6 +24,13 @@ module.exports = {
       categoryId: {
         type: Sequelize.INTEGER
       },
+      description: {
+        type: Sequelize.TEXT
+      },
+      isActive: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
