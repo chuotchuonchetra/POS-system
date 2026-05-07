@@ -44,7 +44,7 @@ export const Checkout = ({cart,onQuantityChange}:Props) => {
                         </div>
                     ))}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0">
+                <div className="absolute bottom-0 left-0 right-0 p-4">
                     <p>Detail Payment</p>
                     <p>Subtotal ${cart.reduce((total,item) => total + item.price * item.quantity,0)}</p>
                     <p>Tax ${cart.reduce((total,item) => total + item.price * 0.10,0)}</p>

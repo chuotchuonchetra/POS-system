@@ -11,12 +11,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Order.hasMany(models.OrderDetail, {
+        foreignKey: 'orderId',
+        as: 'orderDetails'
+      })
+      Order.belongsTo(models.User, {
+        foreignKey: 'userId',
+        as: 'user'
+      })
+      Order.hasOne(models.Payment, {
+        foreignKey: 'orderId',
+        as: 'payment'
+      })
     }
   }
   Order.init({
     userId: DataTypes.INTEGER,
-    total_amount: DataTypes.FLOAT,
-    payment_method: DataTypes.STRING
+    totalAmount: DataTypes.DECIMAL,
+    status: DataTypes.STRING,
+    paymentMethod: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Order',

@@ -2,23 +2,23 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Payments', {
+    await queryInterface.createTable('Orders', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      orderId: {
+      userId: {
         type: Sequelize.INTEGER
       },
-      amount: {
-        type: Sequelize.FLOAT
-      },
-      method: {
-        type: Sequelize.STRING
+      totalAmount: {
+        type: Sequelize.DECIMAL
       },
       status: {
+        type: Sequelize.STRING
+      },
+      paymentMethod: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -32,6 +32,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Payments');
+    await queryInterface.dropTable('Orders');
   }
 };
