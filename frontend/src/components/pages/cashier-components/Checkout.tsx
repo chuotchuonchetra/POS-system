@@ -17,11 +17,11 @@ export const Checkout = ({cart,onQuantityChange}:Props) => {
                     {cart.map((p:Product) => (
                         <div key={p.id} className="flex gap-2 border rounded-2xl pe-2 relative">
                             <div className=" ">
-                                <img src={p.image_url} alt="" className="w-20 rounded-2xl  h-20 m-3" />      
+                                <img src={p.imageUrl} alt="" className="w-20 rounded-2xl  h-20 m-3" />      
                             </div>
                             <div className="flex-2">
                                 <h1>{p.name}</h1>
-                                <p className="text-gray-500 text-xs">{p.description}</p>
+                                <p className="text-gray-500 text-xs truncate w-48">{p.description}</p>
                                 <h1 className="font-bold">${p.price}</h1>
                                 <div className="flex items-center gap-4 absolute  bottom-3">
                                 <button 

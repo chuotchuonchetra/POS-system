@@ -138,7 +138,7 @@ const updateOrder = async (req,res)=>{
     }
 }
 
-const deleteOrder = async (req,res)=>{
+const hardDeleteOrder = async (req,res)=>{
     try {
         const order = await Order.destroy({
             where:{
@@ -171,6 +171,6 @@ module.exports = {
     getOrderById,
     createOrder,
     updateOrder,
-    deleteOrder
-
+    hardDeleteOrder,
+    softDeleteOrder
 }   

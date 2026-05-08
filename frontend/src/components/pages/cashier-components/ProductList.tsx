@@ -66,7 +66,7 @@ export const ProductList = ({ cart, onUpdateCart }) => {
                 >
                   <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
                     <img 
-                      src={p.image_url} 
+                      src={p.imageUrl} 
                       alt={p.name} 
                       className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" 
                     />

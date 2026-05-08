@@ -4,9 +4,7 @@ export interface Product{
   price:number
   stock:number
   cat:string
-  image_url:string
-  color:string
+  imageUrl:string
   quantity?:number
   description?:string
-  
 }

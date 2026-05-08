@@ -1,16 +1,16 @@
  const { where, Op } = require("sequelize");
 const db = require("../models");
  const { Product,Category } = db;
-const getAllProducts = async(req,res)=>{
-    const {categoryId,name} = req.query;
-    let condition = {};
-    if(categoryId){
-        condition.categoryId = categoryId;
-    }
-    if(name){
-        condition.name = {[Op.iLike]: `%${name}%`}
-    }
+ const getAllProducts = async(req,res)=>{
     try {
+        const {categoryId,name} = req.query;
+        let condition = {};
+        if(categoryId){
+            condition.categoryId = categoryId;
+        }
+        if(name){
+            condition.name = {[Op.iLike]: `%${name}%`}
+        }
         const products = await Product.findAll({
             where: condition,
             include:[
@@ -24,6 +24,48 @@ const getAllProducts = async(req,res)=>{
         res.status(200).json({
             success:true,
             products
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            success:false,
+            message:"Internal server error"
+        })
+    }
+ }
+const getProducts = async(req,res)=>{
+    let {page,limit} = req.query;
+    page = parseInt(page) ;
+    limit = parseInt(limit);
+    const offset = (page - 1) * limit;
+    let condition = {};
+    
+    try {
+        const products = await Product.findAndCountAll({
+            where: condition,
+            limit:limit,
+            offset:offset,
+            distinct:true,
+            order:[
+                ['createdAt','DESC']
+            ],
+            include:[
+                {
+                    model:Category,
+                    as:'category',
+                    attributes:['name']
+                }
+            ]
+        });
+        res.status(200).json({
+            success:true,
+            products:products.rows,
+            pagination:{
+                page:page,
+                limit:limit,
+                total:products.count,
+                totalPages:Math.ceil(products.count/limit)
+            }
         })
     } catch (error) {
         console.log(error)
@@ -130,6 +172,7 @@ const hardDeleteProduct = async(req,res)=>{
     }
 }
 module.exports = {
+    getProducts,
     getAllProducts,
     createProduct,
     updateProduct,
