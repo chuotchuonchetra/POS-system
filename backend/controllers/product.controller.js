@@ -1,11 +1,18 @@
- const { where } = require("sequelize");
+ const { where, Op } = require("sequelize");
 const db = require("../models");
  const { Product,Category } = db;
 const getAllProducts = async(req,res)=>{
-    const {categoryId} = req.query;
+    const {categoryId,name} = req.query;
+    let condition = {};
+    if(categoryId){
+        condition.categoryId = categoryId;
+    }
+    if(name){
+        condition.name = {[Op.iLike]: `%${name}%`}
+    }
     try {
         const products = await Product.findAll({
-            where: categoryId ? { categoryId } : {},
+            where: condition,
             include:[
                 {
                     model:Category,
@@ -29,8 +36,8 @@ const getAllProducts = async(req,res)=>{
 const createProduct = async(req,res)=>{
     try {
         const {name,price,stock,categoryId,description} = req.body;
-        const image_url = req.file ? req.file.path : null;
-        if(!name || !price || !stock || !categoryId || !image_url){
+        const imageUrl = req.file ? req.file.path : null;
+        if(!name || !price || !stock || !categoryId || !imageUrl){
             return res.status(400).json({
                 success:false,
                 message:"All fields are required"
@@ -41,7 +48,7 @@ const createProduct = async(req,res)=>{
             price,
             stock,
             categoryId,
-            image_url,
+            imageUrl,
             description
         });
         res.status(201).json({
@@ -60,14 +67,14 @@ const updateProduct = async(req,res)=>{
     try {
         const {id} = req.params;
         const {name,price,stock,categoryId,description} = req.body;
-        const image_url = req.file ? req.file.path : null;
+        const imageUrl = req.file ? req.file.path : null;
 
         const product = await Product.update({
             name,
             price,
             stock,
             categoryId,
-            image_url,
+            imageUrl,
             description
         },{where:{id}});
         if(!product){

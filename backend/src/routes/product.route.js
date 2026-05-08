@@ -3,9 +3,9 @@ const { getAllProducts, createProduct,updateProduct,softDeleteProduct,hardDelete
 const { authMiddleware, roleMiddleware } = require('../middlewares/auth.middleware');
 const upload = require('../middlewares/upload');
 
-router.get('/products',getAllProducts);
-router.post('/products', authMiddleware,roleMiddleware(['admin','owner']),upload.single("image"),createProduct);
-router.put('/products/:id', authMiddleware,roleMiddleware(['admin','owner']),upload.single("image"),updateProduct);
-router.delete('/products/:id', authMiddleware,roleMiddleware(['admin','owner']),softDeleteProduct);
-router.delete('/products/:id/hard', authMiddleware,roleMiddleware(['admin','owner']),hardDeleteProduct);
+router.get('/',getAllProducts);
+router.post('/', authMiddleware,roleMiddleware(['admin','owner']),upload.single("image"),createProduct);
+router.put('/:id', authMiddleware,roleMiddleware(['admin','owner']),upload.single("image"),updateProduct);
+router.delete('/:id', authMiddleware,roleMiddleware(['admin','owner']),softDeleteProduct);
+router.delete('/:id/hard', authMiddleware,roleMiddleware(['admin','owner']),hardDeleteProduct);
 module.exports = router;

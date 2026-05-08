@@ -12,7 +12,7 @@ const getAllCategories = async (req, res) => {
                 {
                     model: db.Product,
                     as: 'products',
-                    attributes: ['id', 'name', 'price', 'stock', 'image_url']
+                    attributes: ['id', 'name', 'price', 'stock', 'imageUrl']
                 }
             ],
             where: {
@@ -61,7 +61,7 @@ const getSpecificCategory = async (req, res) => {
                 {
                     model: db.Product,
                     as: 'products',
-                    attributes: ['id', 'name', 'price', 'stock', 'image_url']
+                    attributes: ['id', 'name', 'price', 'stock', 'imageUrl']
                 }
             ],
             where: {
