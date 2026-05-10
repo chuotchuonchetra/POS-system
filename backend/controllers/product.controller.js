@@ -47,7 +47,7 @@ const getProducts = async(req,res)=>{
             offset:offset,
             distinct:true,
             order:[
-                ['createdAt','DESC']
+                ['id','ASC']
             ],
             include:[
                 {

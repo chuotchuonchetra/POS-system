@@ -1,5 +1,4 @@
 import axios from "axios";
-import { CheckCircle, Plus } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import type { Product } from "../../../types/product.type";
@@ -22,8 +21,8 @@ export const ProductList = ({ cart, onUpdateCart }) => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const url = activeTab === 'all' 
-        ? `http://localhost:5000/api/v1/products` 
+      const url = activeTab === 'all'
+        ? `http://localhost:5000/api/v1/products`
         : `http://localhost:5000/api/v1/products?categoryId=${activeTab}`;
       const response = await axios.get(url);
       setProducts(response.data.products);
@@ -35,16 +34,16 @@ export const ProductList = ({ cart, onUpdateCart }) => {
     <div >
       <Tabs defaultValue={'all'} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex flex-wrap h-auto gap-2 bg-transparent p-0 lg:mb-8 xl:mb-10 2xl:mb-4 md:mb-12">
-          <TabsTrigger 
-            value={'all'} 
+          <TabsTrigger
+            value={'all'}
             className="px-6 py-2 rounded-full data-[state=active]:bg-black data-[state=active]:text-white border border-gray-200 transition-all"
           >
             All Products
           </TabsTrigger>
           {categories?.map((c) => (
-            <TabsTrigger 
-              key={c.id} 
-              value={c.id.toString()} 
+            <TabsTrigger
+              key={c.id}
+              value={c.id.toString()}
               className="px-6 py-2 rounded-full data-[state=active]:bg-black data-[state=active]:text-white border border-gray-200 transition-all"
             >
               {c.name}
@@ -52,7 +51,10 @@ export const ProductList = ({ cart, onUpdateCart }) => {
           ))}
         </TabsList>
 
-        <TabsContent value={activeTab} className="mt-0 outline-none">
+        <TabsContent value={activeTab} className="mt-0 outline-none overflow-y-auto h-[95%]">
+
+
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {products?.map((p) => {
               // FIND if this product is already in the cart
@@ -60,42 +62,78 @@ export const ProductList = ({ cart, onUpdateCart }) => {
               const isInCart = Boolean(cartItem);
 
               return (
-                <div 
-                  className="group relative flex flex-col bg-white border border-gray-100 rounded-3xl p-4 transition-all duration-300 hover:shadow-xl hover:border-transparent" 
+                <div
                   key={p.id}
+                  className="group flex flex-col h-full bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-50">
-                    <img 
-                      src={p.imageUrl} 
-                      alt={p.name} 
-                      className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110" 
+                  {/* Image Container */}
+                  <div className="relative aspect-4/3 overflow-hidden bg-gray-50">
+                    <img
+                      src={p.imageUrl}
+                      alt={p.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                     />
-                  </div>
-                  
-                  <div className="mt-4 flex flex-col grow">
-                    <div className=" items-start mb-1">
-                      <h3 className="font-semibold text-gray-900 leading-tight text-sm">{p.name}</h3>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-blue-600">${p.price}</span>
-                        <span className="font-bold text-blue-600">{p.stock}</span>
-                      </div>
+
+                    {/* Badges */}
+                    <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+                      {p.discount > 0 && (
+                        <span className="bg-red-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm">
+                          {p.discount}% OFF
+                        </span>
+                      )}
                     </div>
-                    <p className="text-xs text-gray-500 mb-4">{p.description}</p>
-                    
-                    <div className="mt-auto">
+
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-gray-900 text-[10px] font-bold px-2 py-1 rounded-md border border-gray-100 shadow-sm">
+                      {p.stock > 0 ? `${p.stock} IN STOCK` : 'OUT OF STOCK'}
+                    </div>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="p-4 flex flex-col grow">
+                    {/* Category */}
+                    <span className="w-fit text-[10px] uppercase tracking-wider font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                      {p.category.name}
+                    </span>
+
+                    {/* Name & Description */}
+                    <div className="mt-3 grow">
+                      <h3 className="text-base font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                        {p.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 line-clamp-2 mt-1 leading-relaxed">
+                        {p.description}
+                      </p>
+                    </div>
+
+                    {/* Price Section */}
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <span className="text-2xl font-black text-gray-900">
+                        ${Number(p.price).toLocaleString()}
+                      </span>
+                      {p.discount > 0 && (
+                        <span className="text-sm text-gray-400 line-through decoration-red-400/50">
+                          ${(Number(p.price) / (1 - p.discount / 100)).toFixed(0)}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Button Section */}
+                    <div className="mt-2">
                       {!isInCart ? (
-                        <button 
+                        <button
                           onClick={() => onUpdateCart(p)}
-                          className="w-full bg-gray-900 hover:bg-black text-white py-2.5 rounded-2xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                          className="w-full bg-gray-900 hover:bg-blue-600 text-white py-3 rounded-xl text-sm font-bold transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
                         >
-                          Add to Cart <Plus size={16}/>
+                          Add to Cart
                         </button>
                       ) : (
-                        <button 
-                          
-                          className="w-full bg-gray-900 hover:bg-black text-white py-2.5 rounded-2xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                        <button
+                          className="w-full bg-green-50 text-green-600 border border-green-200 py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2 cursor-default"
                         >
-                          Added to Cart <CheckCircle size={16}/>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                          Added
                         </button>
                       )}
                     </div>
