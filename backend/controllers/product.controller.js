@@ -55,7 +55,7 @@ const getProducts = async(req,res)=>{
                     as:'category',
                     attributes:['name']
                 }
-            ]
+            ],
         });
         res.status(200).json({
             success:true,

@@ -19,8 +19,7 @@ export const Checkout = ({ cart, onQuantityChange, onRemove, clearCart }: Props)
     const total = subtotal + tax;
 
     return (
-        <div className="h-screen w-[420px] bg-[#f8fafc] border-l border-gray-200 flex flex-col">
-
+        <div className="h-screen w-[420px] bg-[#f8fafc] border-l border-gray-200 flex flex-col relative z-40">
             {/* Header */}
             <div className="bg-white border-b border-gray-100 px-6 py-2.5">
                 <div className="flex items-center justify-between">

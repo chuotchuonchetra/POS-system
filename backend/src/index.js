@@ -15,11 +15,12 @@ const orderRoute = require('./routes/order.route');
 
 
 app.use(morgan("dev"));
-app.use(cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-}));
 
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173/', // Your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Ensure PUT is here
+  credentials: true
+}));
 app.use(express.json());
 app.get("/health", (req, res) => {
     res.send("OK!");

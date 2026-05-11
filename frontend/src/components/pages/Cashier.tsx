@@ -24,7 +24,7 @@ export const CashierPage = () => {
   };
   return (
     <div className="flex h-screen w-full bg-gray-50">
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col">
         <SearchBar />
         <div className=" p-6">
           {/* Pass the cart down so ProductList knows which items are already selected */}
