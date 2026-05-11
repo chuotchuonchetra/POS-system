@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../../lib/api";
 
 // export const getAllProducts = async (page:number,limit:number,setProducts:Function,setTotalPages:Function) => {
 //     try {
@@ -14,13 +14,12 @@ import axios from "axios";
 
 export const getAllProducts = async(page:number,limit:number,)=>{
   try{
-    console.log("page",page)
-    console.log("limit",limit)
-    const res = await axios.get("http://localhost:5000/api/v1/products/filtered",{
+    const res = await api.get("/products/filtered",{
       params:{page,limit}
     });
     return res.data;
   }catch(error){
     console.error("Error fetching products:", error);
+    return { products: [], pagination: { totalPages: 0 } };
   }
 }

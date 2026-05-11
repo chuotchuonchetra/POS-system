@@ -1,18 +1,14 @@
 import { Outlet } from "react-router-dom"
 import { Sidebar } from "./layouts/Sidebar"
-import { Footer } from "./Footer"
 
 const MainLayout = ()=>{
     return(
-        <div className="flex min-h-screen">
+        <div className="min-h-screen bg-slate-50 text-slate-950">
             <Sidebar />
-            <div className="ms-56 flex-1 flex relative ">
-                <main className="flex-1">
+            <div className="pb-16 lg:pl-64 lg:pb-0">
+                <main className="min-h-screen">
                     <Outlet/>
                 </main>
-               <div className="flex-2 absolute bottom-0  w-full">
-                 <Footer/>
-               </div>
             </div>
         </div>
     )

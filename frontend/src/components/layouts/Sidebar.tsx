@@ -1,62 +1,88 @@
-import { CirclesFour, Desktop, Package, Receipt } from "phosphor-react"
-import { Link } from "react-router-dom"
+import { LayoutDashboard, LogOut, Package, ReceiptText, Settings, ShoppingCart } from "lucide-react"
+import { NavLink, useNavigate } from "react-router-dom"
+import { getCurrentUser, hasAllowedRole, type UserRole } from "../../lib/auth"
+
+const navItems = [
+  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "owner"] },
+  { to: "/cashier", label: "Cashier", icon: ShoppingCart, roles: ["admin", "owner", "cashier"] },
+  { to: "/order", label: "Orders", icon: ReceiptText, roles: ["admin", "owner", "cashier"] },
+  { to: "/products", label: "Products", icon: Package, roles: ["admin", "owner"] },
+]
 
 export const Sidebar = () =>{
-    return(
-        <div className="fixed left-0 top-0 h-full w-56 bg-white border-r border-gray-100 flex flex-col z-40">
-            <div className="px-5 py-5 border-b border-gray-100">
-                <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 bg-gray-900 rounded-lg flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"strokeLinecap="round">
-                    <rect x="2" y="3" width="20" height="14" rx="2"/>
-                    <path d="M8 21h8M12 17v4"/>
-                    </svg>
-                </div>
-                <div>
-                    <div className="text-sm font-semibold text-gray-900">POSify</div>
-                    <div className="text-xs text-gray-400">Retail System</div>
-                </div>
-                </div>
-            </div>
+  const navigate = useNavigate();
+  const user = getCurrentUser();
+  const visibleNavItems = navItems.filter((item) => hasAllowedRole(item.roles as UserRole[], user?.role));
 
-            <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-                <div className="tag text-gray-400 px-2 mb-2">Main</div>
-                    <Link to={'/cashier'} className="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-600 font-medium  hover:bg-black hover:text-white" id="nav-cashier">
-                        <Desktop size={18} weight="bold"/>
-                        Cashier
-                    </Link>
-                <Link to={'/order'} className="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-600 font-medium  hover:bg-black hover:text-white" id="nav-orders">
-                    <Receipt weight="bold" size={18}/>
-                    Orders
-                </Link>
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
-                <div className="tag text-gray-400 px-2 mt-4 mb-2">Admin</div>
-                <Link to={'/products'} className="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-600 font-medium hover:bg-black hover:text-white" id="nav-products" >
-                    <Package size={18} weight="bold"/>
-                    Products
-                </Link>
-                <Link to={'/dashboard'}  className="nav-item w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-gray-600 font-medium  hover:bg-black hover:text-white" id="nav-dashboard">
-                    <CirclesFour size={18} weight="bold"/>
-                    Dashboard
-                </Link>
-            </nav>
-
-            <div className="px-3 pb-4">
-                <div className="bg-gray-50 rounded-xl p-3">
-                <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white text-xs font-semibold">KS</div>
-                    <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-gray-900 truncate">Kasem S.</div>
-                    <div className="text-xs text-gray-400">Cashier</div>
-                    </div>
-                    <button className="text-gray-400 hover:text-gray-600">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"strokeLinecap="round">
-                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-                    </svg>
-                    </button>
-                </div>
-                </div>
-            </div>
+  return(
+    <aside className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t border-slate-200 bg-white lg:inset-y-0 lg:left-0 lg:h-screen lg:w-64 lg:flex-col lg:border-r lg:border-t-0">
+      <div className="border-b border-slate-200 px-5 py-5">
+        <div className="hidden items-center gap-3 lg:flex">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-950 text-white">
+            <ShoppingCart size={21} />
+          </div>
+          <div>
+            <div className="text-base font-semibold leading-tight text-slate-950">POSify</div>
+            <div className="text-xs font-medium text-slate-500">Retail operations</div>
+          </div>
         </div>
-    )
+      </div>
+
+      <nav className="flex flex-1 items-center justify-around overflow-x-auto px-2 py-2 lg:block lg:space-y-6 lg:overflow-y-auto lg:px-3 lg:py-5">
+        <div className="w-full lg:w-auto">
+          <div className="hidden px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400 lg:block">Workspace</div>
+          <div className="flex justify-around gap-1 lg:block lg:space-y-1">
+            {visibleNavItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `flex min-w-16 flex-col items-center gap-1 rounded-lg px-2 py-2 text-[11px] font-medium transition lg:min-w-0 lg:flex-row lg:gap-3 lg:px-3 lg:py-2.5 lg:text-sm ${
+                      isActive
+                        ? "bg-slate-950 text-white shadow-sm"
+                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+                    }`
+                  }
+                >
+                  <Icon size={18} />
+                  <span>{item.label}</span>
+                </NavLink>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="hidden lg:block">
+          <div className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">System</div>
+          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950">
+            <Settings size={18} />
+            Settings
+          </button>
+        </div>
+      </nav>
+
+      <div className="hidden border-t border-slate-200 p-4 lg:block">
+        <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-600 text-sm font-semibold text-white">
+            {(user?.name ?? "U").slice(0, 1).toUpperCase()}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-sm font-semibold text-slate-900">{user?.name ?? "Store User"}</div>
+            <div className="truncate text-xs capitalize text-slate-500">{user?.role ?? "staff"}</div>
+          </div>
+          <button onClick={handleLogout} className="rounded-md p-2 text-slate-400 hover:bg-white hover:text-slate-700">
+            <LogOut size={17} />
+          </button>
+        </div>
+      </div>
+    </aside>
+  )
 }

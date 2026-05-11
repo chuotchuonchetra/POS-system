@@ -19,19 +19,18 @@ export const CashierPage = () => {
   };
 
   const handleClearCart = () => {
-    console.log('cleared')
     setCart([]);
   };
   return (
-    <div className="flex h-screen w-full bg-gray-50">
-      <div className="flex-1 flex flex-col">
+    <div className="flex min-h-screen w-full flex-col bg-slate-50 xl:h-screen xl:flex-row xl:overflow-hidden">
+      <div className="flex min-w-0 flex-1 flex-col xl:min-h-0">
         <SearchBar />
-        <div className=" p-6">
+        <div className="min-h-0 flex-1 p-4 sm:p-6">
           {/* Pass the cart down so ProductList knows which items are already selected */}
           <ProductList cart={cart} onUpdateCart={handleUpdateCart} />
         </div>
       </div>
-      <div className=" border-l bg-white">
+      <div className="shrink-0 border-t border-slate-200 bg-white xl:border-l xl:border-t-0">
         <Checkout cart={cart} onQuantityChange={handleQuantityChange} onRemove={handleRemoveItem} clearCart={handleClearCart} />
       </div>
     </div>

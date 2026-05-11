@@ -1,5 +1,5 @@
 
-const {Order,OrderDetail,User,Product,Category} = require('../models')
+const {Order,OrderDetail,User,Product,Category,sequelize} = require('../models')
 
 const getAllOrders = async (req,res)=>{
     try {
@@ -66,23 +66,40 @@ const getOrderById = async (req, res) => {
         }
         res.status(200).json(order)
     } catch (error) {
+
+        
         res.status(500).json({ message: error.message })
     }
 }
  
 const createOrder = async (req,res)=>{
-    console.log("Body received:", req.body);
+    const transaction = await sequelize.transaction();
     try {
         const {userId,totalAmount,paymentMethod,items} = req.body
-        
-         for(let item of items){
+
+        if (!userId || !paymentMethod || !Array.isArray(items) || items.length === 0) {
+            await transaction.rollback();
+            return res.status(400).json({message:'userId, paymentMethod, and items are required'})
+        }
+
+        for(let item of items){
+            if (!item.productId || !item.quantity || item.quantity < 1 || !item.unitPrice) {
+                await transaction.rollback();
+                return res.status(400).json({message:'Each item requires productId, quantity, and unitPrice'})
+            }
             const product = await Product.findOne({
-                where:{id:item.productId,isActive:true}
+                where:{id:item.productId,isActive:true},
+                transaction
             })
             if(!product){
+                await transaction.rollback();
                 return res.status(404).json({message:'Product not found'})
-            }    
-        }4
+            }
+            if (product.stock < item.quantity) {
+                await transaction.rollback();
+                return res.status(400).json({message:`Insufficient stock for ${product.name}`})
+            }
+        }
 
 
         const order = await Order.create({
@@ -90,30 +107,30 @@ const createOrder = async (req,res)=>{
             totalAmount,
             status: 'pending',
             paymentMethod
-        })
+        }, { transaction })
 
         //create order details + decrement stock 
         for (const item of items){
-            const orderDetail = await OrderDetail.create({
+            await OrderDetail.create({
                 orderId:order.id,
                 productId:item.productId,
                 quantity:item.quantity,
                 unitPrice:item.unitPrice
-            })
+            }, { transaction })
             //decrement stock
-            // await Product.update({
-            //     stock:Product.stock - item.quantity
-            // },{where:{id:item.productId}})
             await Product.decrement('stock',{
                 by:item.quantity,
-                where:{id:item.productId}
+                where:{id:item.productId},
+                transaction
             })
         }
+        await transaction.commit();
         res.status(200).json({
             data: order,
             message: 'Order created successfully'
         })
     } catch (error) {
+        await transaction.rollback();
         res.status(500).json({ message: error.message })
     }
 }

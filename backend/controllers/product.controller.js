@@ -111,20 +111,25 @@ const updateProduct = async(req,res)=>{
         const {name,price,stock,categoryId,description} = req.body;
         const imageUrl = req.file ? req.file.path : null;
 
-        const product = await Product.update({
+        const updateData = {
             name,
             price,
             stock,
             categoryId,
-            imageUrl,
             description
-        },{where:{id}});
-        if(!product){
+        };
+        if (imageUrl) {
+            updateData.imageUrl = imageUrl;
+        }
+
+        const [updatedCount] = await Product.update(updateData,{where:{id}});
+        if(updatedCount === 0){
             return res.status(404).json({
                 success:false,
                 message:"Product not found"
             })
         }
+        const product = await Product.findByPk(id);
         res.status(200).json({
             success:true,
             product

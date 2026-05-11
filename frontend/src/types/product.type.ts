@@ -3,9 +3,10 @@ export interface Product{
   name:string
   price:number
   stock:number
-  imageUrl:string | File
-  quantity?:number,
-  discount:number,
+  imageUrl:string
+  quantity?:number
+  discount:number
+  categoryId?:number
   category:{name:string},
   description?:string
 } 
