@@ -18,7 +18,7 @@ const getAllOrders = async (req,res)=>{
                         {
                             model:Product,
                             as:'product',
-                            attributes: ['name','price','discount'],
+                            attributes: ['name','price','discount','imageUrl'],
                             include:[
                                 {
                                     model:Category,
@@ -108,7 +108,7 @@ const createOrder = async (req,res)=>{
             status: 'pending',
             paymentMethod
         }, { transaction })
-
+        
         //create order details + decrement stock 
         for (const item of items){
             await OrderDetail.create({

@@ -33,7 +33,17 @@ app.use('/api/v1/products',productRoute)
 app.use('/api/v1/payments',paymentRoute)
 app.use('/api/v1/orders',orderRoute)
 
+app.use("/api/v1/products", productRoute);
 
+// ADD THIS LAST
+app.use((err, req, res, next) => {
+  console.log(err);
+
+  res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+});
 const start = async ()=>{
     try {
         await db.sequelize.authenticate();

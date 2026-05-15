@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 
 export const SearchBar = () => {
+
   return (
     <div className="flex flex-col gap-3 border-b border-slate-200 bg-white px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
       <div>

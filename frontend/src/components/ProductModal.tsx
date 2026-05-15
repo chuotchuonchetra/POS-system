@@ -73,6 +73,7 @@ const ProductModal = ({ isOpen, onClose, onSave, product, isEdit }: Props) => {
         onSave()
       }
     }
+    console.log(formData, imageFile)
     setIsSubmitting(false);
   };
 
