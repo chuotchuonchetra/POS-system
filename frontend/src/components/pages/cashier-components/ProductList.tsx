@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import type { Product } from "../../../types/product.type";
 import { api } from "../../../lib/api";
-import { getProductImage } from "../../../lib/productImage";
+
 
 interface Category {
   id: number;
@@ -76,7 +76,7 @@ export const ProductList = ({ cart, onUpdateCart }: Props) => {
             {products?.map((p) => {
               const cartItem = cart.find((item: Product) => item.id === p.id);
               const isInCart = Boolean(cartItem);
-              const imageSrc = getProductImage(p.name, p.imageUrl, p.category?.name);
+
 
               return (
                 <div
@@ -86,7 +86,7 @@ export const ProductList = ({ cart, onUpdateCart }: Props) => {
                   <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
 
                     <img
-                      src={imageSrc}
+                      src={p.imageUrl}
                       alt={p.name}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 

@@ -49,7 +49,7 @@ export const OrderDetailDrawer = ({ order, isOpen, onClose }: OrderDetailDrawerP
                             <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold">Purchased Items</p>
                             {order.orderDetails.map((item) => (
                                 <div key={item.id} className="flex items-center gap-4 rounded-lg border border-slate-100 p-3">
-                                    <div className="h-12 w-12 flex-shrink-0 rounded-md bg-slate-100 flex items-center justify-center text-xl">
+                                    <div className="h-12 w-12 shrink-0 rounded-md bg-slate-100 flex items-center justify-center text-xl">
                                         <img className="h-12 w-12 rounded-md" src={item.product.imageUrl} alt="" />
                                     </div>
                                     <div className="flex-1">

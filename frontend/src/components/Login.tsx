@@ -5,8 +5,8 @@ import { api } from "../lib/api";
 import { getDefaultPathForRole } from "../lib/auth";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("admin@store.com");
-  const [password, setPassword] = useState<string>("123456");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -74,6 +74,7 @@ const Login: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    placeholder="[EMAIL_ADDRESS]"
                     className="h-10 flex-1 bg-transparent text-sm outline-none"
                   />
                 </div>
@@ -87,6 +88,7 @@ const Login: React.FC = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="password"
                     className="h-10 flex-1 bg-transparent text-sm outline-none"
                   />
                 </div>

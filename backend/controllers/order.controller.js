@@ -2,8 +2,18 @@
 const {Order,OrderDetail,User,Product,Category,sequelize} = require('../models')
 
 const getAllOrders = async (req,res)=>{
+    let {page,limit} = req.query;
+    page = parseInt(page) ;
+    limit = parseInt(limit);
+    const offset = (page - 1) * limit;
     try {
-        const orders = await Order.findAll({
+        const orders = await Order.findAndCountAll({
+            limit:limit,
+            offset:offset,
+            distinct:true,
+            order:[
+                ['id','ASC']
+            ],
             include:[
                 {
                     model:User,
@@ -33,8 +43,15 @@ const getAllOrders = async (req,res)=>{
         });
 
         return res.status(200).json({
-            data:orders,
-            message:"All orders fetched successfully"
+            success:true,
+            data:orders.rows,
+            message:"All orders fetched successfully",
+            pagination:{
+                page:page,
+                limit:limit,
+                total:orders.count,
+                totalPages:Math.ceil(orders.count/limit)
+            }
         })
         
     } catch (error) {
@@ -126,6 +143,7 @@ const createOrder = async (req,res)=>{
         }
         await transaction.commit();
         res.status(200).json({
+            success:true,
             data: order,
             message: 'Order created successfully'
         })

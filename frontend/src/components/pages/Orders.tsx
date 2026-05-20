@@ -30,7 +30,9 @@ export interface Order {
 }
 
 export const OrderPage = () => {
-
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); // New state
@@ -42,9 +44,11 @@ export const OrderPage = () => {
   useEffect(() => {
     const fetchAllOrders = async () => {
       try {
-        const response = await getAllOrders();
-        if (response.data) {
+        const response = await getAllOrders(page, limit);
+        if (response.success) {
+          console.log(response.data);
           setOrders(response.data);
+          setTotalPages(response.pagination.totalPages);
         }
       } catch (error) {
         console.error("Failed to fetch orders:", error);
@@ -53,7 +57,7 @@ export const OrderPage = () => {
       }
     };
     fetchAllOrders();
-  }, []);
+  }, [page, limit]);
   // --- Business Logic Calculations ---
   const stats = useMemo(() => {
     const revenue = orders.reduce((sum, o) => sum + parseFloat(o.totalAmount), 0);
@@ -77,10 +81,10 @@ export const OrderPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-8">
+    <div className="min-h-screen bg-slate-50/50 p-4 sm:p-4">
       {/* Header */}
       <div className="mx-auto max-w-10xl">
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900">Orders</h1>
             <p className="mt-2 text-slate-500">Manage transactions and track store performance.</p>
@@ -93,7 +97,7 @@ export const OrderPage = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+        <div className="mb-4 grid gap-4 sm:grid-cols-3">
           <StatCard title="Today's Revenue" value={`$${stats.revenue}`} subtext="From current orders" />
           <StatCard title="Total Orders" value={stats.orderCount.toString()} subtext="Lifetime volume" />
           <StatCard title="Refunds" value={stats.refunds.toString()} subtext="Processed returns" />
@@ -122,27 +126,27 @@ export const OrderPage = () => {
                 <tbody className="divide-y divide-slate-100">
                   {orders.map((order) => (
                     <tr onClick={() => handleRowClick(order)} key={order.id} className="group hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4 text-sm font-medium text-indigo-600">#ORD-{order.id}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 md:py-3 py-2text-sm font-medium text-indigo-600">#ORD-{order.id}</td>
+                      <td className="px-6 md:py-3 py-2">
                         <div className="text-sm font-medium text-slate-900">{order.user.name}</div>
                         <div className="text-xs text-slate-500 capitalize">{order.user.role}</div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">
+                      <td className="px-6  md:py-3 py-2 text-sm text-slate-600">
                         {new Date(order.createdAt).toLocaleDateString()}
                         <span className="ml-2 text-slate-400">
                           {new Date(order.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm text-slate-600">
+                      <td className="px-6 md:py-3 py-2 text-center text-sm text-slate-600">
                         {order.orderDetails.reduce((acc, curr) => acc + curr.quantity, 0)}
                       </td>
-                      <td className="px-6 py-4 text-center text-sm text-slate-600">{order.paymentMethod}</td>
-                      <td className="px-6 py-4 text-center">
+                      <td className="px-6 md:py-2 py-4 text-center text-sm text-slate-600">{order.paymentMethod}</td>
+                      <td className="px-6 md:py-2 py-4 text-center">
                         <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${getStatusStyles(order.status)}`}>
                           {order.status}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-center text-sm font-bold text-slate-900">
+                      <td className="px-6 md:py-3 py-2 text-center text-sm font-bold text-slate-900">
                         ${parseFloat(order.totalAmount).toFixed(2)}
                       </td>
                     </tr>
@@ -151,6 +155,27 @@ export const OrderPage = () => {
               </table>
             </div>
           )}
+          <div className="flex flex-col gap-3 border-t border-slate-200 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-sm text-slate-600">
+              Page <span className="font-semibold text-slate-950">{page}</span> of <span className="font-semibold text-slate-950">{totalPages}</span>
+            </span>
+            <div className="grid grid-cols-2 gap-2 sm:flex">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage(page - 1)}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage(page + 1)}
+                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <OrderDetailDrawer

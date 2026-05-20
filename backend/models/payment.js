@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'orderId',
         as: 'order'
       })
+      
     }
   }
   Payment.init({

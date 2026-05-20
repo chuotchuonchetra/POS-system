@@ -9,9 +9,10 @@ import Login from './components/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 import DashboardPage from './components/pages/Dashboard'
+import PaymentModal from './components/test/Payment'
 
 function App() {
-  
+
 
   return (
     <BrowserRouter>
@@ -24,8 +25,8 @@ function App() {
           <Route path='products' element={<ProtectedRoute allowedRoles={['admin', 'owner']}><ProductPage /></ProtectedRoute>} />
           <Route path='order' element={<ProtectedRoute allowedRoles={['admin', 'owner', 'cashier']}><OrderPage /></ProtectedRoute>} />
         </Route>
-        <Route path='*' element={<Navigate to="/login" replace />} />
-
+        {/* <Route path='*' element={<Navigate to="/login" replace />} /> */}
+        <Route path='test/payment' element={<PaymentModal cart={[]} userId={0} onClose={function (): void { throw new Error("Function not implemented."); }} onSuccess={function (): void { throw new Error("Function not implemented."); }} />} />
       </Routes>
     </BrowserRouter>
   )

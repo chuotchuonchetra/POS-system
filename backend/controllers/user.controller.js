@@ -18,6 +18,7 @@ const login = async (req,res)=>{
                 message: "User not found",
                 success:false
             })
+            
         }
         const isMatch = await bcrypt.compare(password,user.password);
 
@@ -32,13 +33,7 @@ const login = async (req,res)=>{
             message: "User logged in successfully",
             success:true,
             token,
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isActive: user.isActive
-            }
+            user
         })
     } catch (error) {
         console.log(error)
@@ -83,13 +78,7 @@ const register = async(req,res)=>{
         res.status(201).json({
             message: "User created successfully",
             success:true,
-            user: {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                isActive: user.isActive
-            }
+            user
         })
     } catch (error) {
         console.log(error)

@@ -14,11 +14,12 @@ const paymentRoute = require('./routes/payment.route');
 const orderRoute = require('./routes/order.route');
 
 
+
 app.use(morgan("dev"));
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173/', // Your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Ensure PUT is here
+  origin: process.env.CLIENT_URL || 'http://localhost:5173/', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   credentials: true
 }));
 app.use(express.json());
@@ -32,9 +33,6 @@ app.use('/api/v1/auth',userRoute)
 app.use('/api/v1/products',productRoute)
 app.use('/api/v1/payments',paymentRoute)
 app.use('/api/v1/orders',orderRoute)
-
-app.use("/api/v1/products", productRoute);
-
 // ADD THIS LAST
 app.use((err, req, res, next) => {
   console.log(err);

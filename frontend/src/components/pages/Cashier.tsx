@@ -25,8 +25,7 @@ export const CashierPage = () => {
     <div className="flex min-h-screen w-full flex-col bg-slate-50 xl:h-screen xl:flex-row xl:overflow-hidden">
       <div className="flex min-w-0 flex-1 flex-col xl:min-h-0">
         <SearchBar />
-        <div className="min-h-0 flex-1 p-4 sm:p-6">
-          {/* Pass the cart down so ProductList knows which items are already selected */}
+        <div className="min-h-0 flex-1 p-4 sm:ps-4 sm:pe-0">
           <ProductList cart={cart} onUpdateCart={handleUpdateCart} />
         </div>
       </div>
