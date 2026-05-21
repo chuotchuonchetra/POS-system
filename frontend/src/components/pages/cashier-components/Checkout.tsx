@@ -9,7 +9,7 @@ interface Props {
   onRemove: (productId: number) => void;
   clearCart: () => void;
 }
-
+declare const AbaPayway: any;
 export const Checkout = ({
   cart,
   onQuantityChange,
