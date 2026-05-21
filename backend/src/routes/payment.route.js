@@ -9,7 +9,7 @@ const {
 } = require("../../controllers/payment.controller");
 
 router.get("/", getAllPayments);
-router.p("/status/:orderId", checkPaymentStatus);
+router.post("/status/:orderId", checkPaymentStatus);
 router.get("/:id", getPaymentById);
 router.post("/:orderId", createPayment);
 router.put("/:id", updatePayment);
