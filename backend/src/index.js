@@ -18,10 +18,13 @@ app.use(morgan("dev"));
 app.use(
   cors({
     origin: [
-      process.env.CLIENT_URL || "http://localhost:5173/",
+      // Removed the trailing slash from the fallback
+      process.env.CLIENT_URL || "http://localhost:5173",
       "https://pos-system-bytra.vercel.app",
-      "https://pos-system-xi-nine.vercel.app/",
-      "https://pos-system-mu-taupe.vercel.app/",
+      // Removed the trailing slash here
+      "https://pos-system-xi-nine.vercel.app",
+      // Removed the trailing slash here
+      "https://pos-system-mu-taupe.vercel.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
