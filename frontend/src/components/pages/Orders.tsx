@@ -1,39 +1,14 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { getAllOrders } from "../../services/orders/getAllOrders";
 import { OrderDetailDrawer } from "./order-components/OrderDetail";
-
-// Interface updated: orderDetails is usually an array
-interface OrderDetail {
-  id: number;
-  quantity: number;
-  unitPrice: string;
-  productId: number;
-  product: {
-    name: string;
-    price: string;
-    discount: string;
-    category: { name: string };
-    imageUrl: string;
-  };
-}
-
-export interface Order {
-  id: number;
-  userId: number;
-  totalAmount: string;
-  status: string;
-  paymentMethod: string;
-  createdAt: string;
-  updatedAt: string;
-  user: { name: string; role: string };
-  orderDetails: OrderDetail[]; // Changed to array
-}
+import type { Order } from "../../types/order.type";
 
 export const OrderPage = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [totalOrder, setTotalOrder] = useState(0);
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null); // New state
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // New state
@@ -46,8 +21,9 @@ export const OrderPage = () => {
       try {
         const response = await getAllOrders(page, limit);
         if (response.success) {
-          console.log(response.data);
+          console.log(response);
           setOrders(response.data);
+          setTotalOrder(response.pagination.total);
           setTotalPages(response.pagination.totalPages);
         }
       } catch (error) {
@@ -58,23 +34,6 @@ export const OrderPage = () => {
     };
     fetchAllOrders();
   }, [page, limit]);
-  // --- Business Logic Calculations ---
-  const stats = useMemo(() => {
-    const revenue = orders.reduce(
-      (sum, o) => sum + parseFloat(o.totalAmount),
-      0,
-    );
-
-    const refunds = orders.filter(
-      (o) => o.status.toLowerCase() === "refunded",
-    ).length;
-
-    return {
-      revenue: revenue.toFixed(2),
-      orderCount: orders.length,
-      refunds: refunds,
-    };
-  }, [orders]);
 
   const getStatusStyles = (status: string) => {
     switch (status.toLowerCase()) {
@@ -113,19 +72,15 @@ export const OrderPage = () => {
         <div className="mb-4 grid gap-4 sm:grid-cols-3">
           <StatCard
             title="Today's Revenue"
-            value={`$${stats.revenue}`}
+            value={`0`}
             subtext="From current orders"
           />
           <StatCard
             title="Total Orders"
-            value={stats.orderCount.toString()}
+            value={String(totalOrder)}
             subtext="Lifetime volume"
           />
-          <StatCard
-            title="Refunds"
-            value={stats.refunds.toString()}
-            subtext="Processed returns"
-          />
+          <StatCard title="Refunds" value={"0"} subtext="Processed returns" />
         </div>
 
         {/* Orders Table Container */}
@@ -197,6 +152,16 @@ export const OrderPage = () => {
                       </td>
                     </tr>
                   ))}
+                  {orders.length < limit &&
+                    Array.from({ length: limit - orders.length }).map(
+                      (_, index) => (
+                        <tr
+                          key={`empty-${index}`}
+                          className="h-[60.8px] bg-white">
+                          <td colSpan={7} />
+                        </tr>
+                      ),
+                    )}
                 </tbody>
               </table>
             </div>
@@ -246,8 +211,22 @@ const StatCard = ({
   <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
     <p className="text-sm font-medium text-slate-500">{title}</p>
     <div className="mt-2 flex items-baseline gap-2">
-      <p className="text-3xl font-bold text-slate-900">{value}</p>
+      <p
+        className={`text-3xl font-bold ${
+          title == "Total Orders" ? "text-green-600"
+          : title == "Refunds" ? "text-red-600"
+          : "text-gray-900"
+        }`}>
+        {value}
+      </p>
     </div>
-    <p className="mt-1 text-xs text-slate-400">{subtext}</p>
+    <p
+      className={`mt-1 text-xs ${
+        title == "Total Orders" ? "text-green-600"
+        : title == "Refunds" ? "text-red-600"
+        : "text-gray-900"
+      }`}>
+      {subtext}
+    </p>
   </div>
 );

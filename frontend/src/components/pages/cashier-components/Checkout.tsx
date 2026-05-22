@@ -9,6 +9,7 @@ interface Props {
   onRemove: (productId: number) => void;
   clearCart: () => void;
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const AbaPayway: any;
 export const Checkout = ({
   cart,
@@ -39,7 +40,6 @@ export const Checkout = ({
       });
       const orderId = res.data.id;
       if (res.success) {
-        console.log("Order created successfully", orderId);
         const res = await createPayment(orderId);
         if (res.success) {
           console.log("Payment created successfully", res);
@@ -62,6 +62,8 @@ export const Checkout = ({
           document.body.appendChild(form);
 
           AbaPayway?.checkout();
+
+          console.log("submited");
         }
       } else {
         console.log("Failed to create order", res.data);
@@ -72,7 +74,7 @@ export const Checkout = ({
   };
 
   return (
-    <aside className="flex max-h-[72vh] w-full flex-col bg-white xl:h-screen xl:max-h-none xl:w-[410px]">
+    <aside className="flex max-h-[72vh] w-full flex-col bg-white xl:h-screen xl:max-h-none xl:w-102.5">
       <header className="border-b border-slate-200 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>

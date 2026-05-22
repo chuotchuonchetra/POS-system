@@ -21,6 +21,7 @@ app.use(
       process.env.CLIENT_URL || "http://localhost:5173/",
       "https://pos-system-bytra.vercel.app",
       "https://pos-system-mu-taupe.vercel.app/",
+      "https://pos-system-mu-taupe.vercel.app/",
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
