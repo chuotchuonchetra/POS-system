@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 dotenv.config();
+
 module.exports = {
   development: {
     username: process.env.DB_USER,
@@ -15,18 +16,19 @@ module.exports = {
       },
     },
   },
-  test: {
-    username: "root",
-    password: null,
-    database: "database_test",
-    host: "127.0.0.1",
-    dialect: "mysql",
-  },
+  // Update the production block below:
   production: {
-    username: "root",
-    password: null,
-    database: "database_production",
-    host: "127.0.0.1",
-    dialect: "mysql",
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    dialect: "postgres", // Must be postgres, not mysql
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };
